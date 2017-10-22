@@ -3,5 +3,31 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-theme.min.css')
+
+    script(src='/javascripts/jquery.min.js')
+    script(src='/javascripts/bootstrap.js')
   body
-    block content
+    .navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          a.btn.btn-navbar(data-toggle="collapse",data-target=".nav-collapse")
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="/") Microblog
+        .collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li.active
+              a(href="/") 首页
+            li
+              a(href="/login") 登入
+            li
+              a(href="/reg") 注册
+    #container.container
+      block content
+      hr
+      footer
+        p
+          a(href="http://www.sunnynetwork.cn",target="_blank") mrj@sunnynetwork
