@@ -6,9 +6,15 @@
 
 2. 如果要进行样式的定义，需要先**创建静态文件目录**，这个目录中的内容，可以直接使用浏览器获取：`app.use(express.static(路径))`
 
-3. 设置视图的目录： `app.set('views', path.join(__dirname, 'views'));app.set('view engine', 'jade');`
+3. 设置视图的目录： 
+```
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+```
 
 4. 向特定路径的视图返回数据：`res.render('index', { title: 'Express' });`
+
+5. 虽然平常我们修改 node.js 代码之后需要重启来查看变化，但是 jade 引擎不在此列，因为是动态加载的，所以我们修改完 jade 文件之后可以直接刷新网页来查看效果的。
 
 ## 创建模板
 
@@ -77,7 +83,21 @@ script
     console.log('We want you')
 </script>
 
+p
+  | foo bar baz
+  | rawr rawr
+p.
+  foo bar baz
+  rawr rawr
+// 两种情况都会转化为
+<p>foo bar baz rawr rawr</p>
 ```
+
+### 变量调用
+
+- #{表达式}
+- =表达式
+- !=表达式
 
 ### 属性
 
@@ -107,3 +127,23 @@ body
 ### 设置id或class
 
 
+### 引用其他模板
+
+1. include
+
+2. extends
+
+
+### 循环
+
+将 JavaScript 嵌入到 Jade 中，一共有三种方法。第一种方式是使用 -，代码中的特殊字符不会被转义：
+```
+- for (var x = 0; x < 3; x++) 
+  li <a></a>
+```
+生成的HTML：
+```
+<li><a></a></li>
+<li><a></a></li>
+<li><a></a></li>
+```
