@@ -4,17 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var flash = require('connect-flash');
 var session = require('express-session');
-var MongoStore = require('connect-mongo');
+var MongoStore = require('connect-mongo')(session);
 var settings = require('./db/settings');
 
 var index = require('./routes/index');
 var user = require('./routes/user');
 var post = require('./routes/post');
 var reg = require('./routes/reg');
-var doReg = require('./routes/doReg');
 var login = require('./routes/login');
-var doLogin = require('./routes/doLogin');
 var logout = require('./routes/logout');
 
 
@@ -32,22 +31,43 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// cookieParser
-// app.use(session({
-//   secret: settings.cookieSecret,
-//   store: new MongoStore({
-//     db: settings.db
-//   })
-// }))
+
+app.use(session({
+  secret: settings.cookieSecret,
+  store: new MongoStore({
+    url: settings.url,
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: true
+  })
+}))
+
+app.use(flash());
+// set flash
+app.use(function (req, res, next) {
+  res.locals.user = req.session.user;
+  console.log('res.locals.user:', res.locals.user)
+  var err = req.flash('error');
+  var success = req.flash('success');
+
+  res.locals.error = err.length ? err : null;
+  console.log('res.locals.error:', res.locals.error)
+
+  res.locals.success = success.length ? success : null;
+  console.log('res.locals.success:', res.locals.success)
+
+  console.log('....flash().....')
+  next();
+});
 
 // 路由设置
 app.get('/', index);
 app.get('/u/:user', user);
 app.post('/post', post);
 app.get('/reg', reg);
-app.post('/reg', doReg);
+app.post('/reg', reg);
 app.get('/login', login);
-app.post('/login', doLogin);
+app.post('/login', login);
 app.get('/logout', logout);
 
 // 路由的高级匹配
@@ -72,5 +92,28 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// 创建动态视图助手
+// app.dynamicHelpers({
+//   user: function (req, res) {
+//     return req.session.user
+//   },
+//   error: function (req, res) {
+//     var err = req.flash('error')
+//     if (err.length) {
+//       return err
+//     } else {
+//       return null
+//     }
+//   },
+//   success: function (req, res) {
+//     var succ = req.flash('success')
+//     if (succ.length) {
+//       return succ
+//     } else {
+//       return null
+//     }
+//   }
+// })
 
 module.exports = app;

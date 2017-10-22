@@ -1,12 +1,16 @@
 extends layout
 
 block content
-  .hero-unit
-    h1 欢迎来到Microblog
-    p Microblog是一个基于Nodejs的微博系统
-    p
-      a.btn.btn-primary.btn-large(href="/login") 登录
-      a.btn.btn-large(href="/reg") 立即注册
+  if !user
+    .hero-unit
+      h1 欢迎来到Microblog
+      p Microblog是一个基于Nodejs的微博系统
+      p
+        a.btn.btn-primary.btn-large(href="/login") 登录
+        a.btn.btn-large(href="/reg") 立即注册
+  else
+    include say
+  include posts
   .row
     .col-sm-4
       h2 zzj1说

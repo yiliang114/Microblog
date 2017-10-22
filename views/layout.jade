@@ -21,11 +21,19 @@ html
           ul.nav.navbar-nav
             li.active
               a(href="/") 首页
-            li
-              a(href="/login") 登入
-            li
-              a(href="/reg") 注册
+            if !user
+              li
+                a(href="/login") 登入
+              li
+                a(href="/reg") 注册
+            else
+              li
+                a(href="/logout") 登出
     #container.container
+      if success
+        .alert.alert-success #{success}
+      if error
+        .alert.alert-error #{error}
       block content
       hr
       footer

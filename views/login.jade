@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    form.form-horizontal(method="post")
+        fieldset
+            legend 用户登入
+            .form-group
+                label.control-label.col-sm-2(for="username") 用户名
+                .controls.col-sm-10
+                    input.input-xlarge(type="text",id="username",name="username")
+            .form-group
+                label.control-label.col-sm-2(for="password") 口令
+                .controls.col-sm-10
+                    input.input-xlarge(type="password",id="password",name="password")
+            .form-group
+                .col-sm-offset-2.col-sm-10
+                    button.btn.btn-primary(type="submit") 登入
+        

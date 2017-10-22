@@ -1,9 +1,16 @@
 var express = require('express');
 var router = express.Router();
+var Post = require('../db/models/post')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+/* GET index page. */
+router.get('/', function (req, res) {
+  Post.get(null, function (err, posts) {
+    if (err) {
+      posts = []
+    }
+    res.render('index', { title: '首页', posts: posts });
+  })
+
 });
 
 module.exports = router;
