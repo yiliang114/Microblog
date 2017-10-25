@@ -1,10 +1,12 @@
 .container
-    .row
-        - for (var index = 0; index< posts.length; index++)
-            .col-sm-4
-                h2
-                    a(href="/u/#{posts[index].user}") #{posts[index].user} 说
-                p 
-                    small #{posts[index].time}
-                p
-                    #{posts[index].post}
+    .col-sm-2
+    .col-sm-8
+        .row
+            - for (var index = 0; index< posts.length; index++)
+                    h2
+                        a(href="/u/#{posts[index].user}") #{posts[index].user} 说
+                    p 
+                        small #{posts[index].time}
+                    p #{posts[index].post}
+    .col-sm-2
+

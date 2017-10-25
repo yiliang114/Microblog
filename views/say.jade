@@ -1,4 +1,19 @@
-form.well.form-inline.center(action="/post",method="post",style="text-align:center;")
-    input.col-sm-8(type="text",name="post")
-    button.btn.btn-success(type="submit") 发言
-        i.icon-commit.icon-white      
+img#logo(src="/images/b3_100901.png",alt="")
+center
+    #myBody
+            #myBdLeft
+                form.well.wellwell.form-inline.center(action="/post",method="post",style="text-align:center;")
+                    #talkBox
+                        h2 夏天来了，你懂得......
+                        textarea#msgTxt(type="text",name="post")
+                        #funBox
+                            a.creatNew(href="javascript:void(0);") 话题
+                            a.atSome(href="javascript:void(0);") 朋友
+                            a.insertFace(href="javascript:void(0);") 表情
+                            a.uploadPic(href="javascript:void(0);") 照片
+                            a.uploadVideo(href="javascript:void(0);") 视频
+                        #sendBox
+                            button.btn.btn-success.sendBtn(type="submit") 发言
+                                i.icon-commit.icon-white
+                            span.countTxt 还能输入
+                                em 140 字
