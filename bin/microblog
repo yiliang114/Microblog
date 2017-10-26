@@ -1,0 +1,12 @@
+#! /bin/sh
+
+NODE_ENV = production
+
+NAME = Microblog
+DESC = Microblog
+PIDFILE = "microblog.pid"
+
+case "$1" in
+    start)
+        echo "Starting $DESC:"
+                

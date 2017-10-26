@@ -171,4 +171,39 @@ router.post('/login', function(req, res, next) {
 `<%= errors %>`,就是调用相应的信息的方法。在`index.js`中传递了`req.flash('error','用户不存在');`,在`app.js`中，把`req.flash('error');`的提示信息赋值给了`res.locals.errors`，而我们如果要调用`locals`中的 `errors`变量，不需要写成`locals.errors`，而是直接写变量名`errors`就可以了。
 
 
+## deprecated undefined resave option
 
+express-session启动警告deprecated undefined resave option。没有为 express-session 模块指定“resave ”和“saveUninitialized ”选项，这种做法是不赞成的。
+
+- resave ——重新保存：强制会话保存即使是未修改的。(默认值ture)
+- saveUninitialized ：强制保存未初始化的会话到存储器
+
+```
+app.use(session({  
+  resave: false, //添加 resave 选项  
+  saveUninitialized: true, //添加 saveUninitialized 选项  
+  secret: 'aF,.j)wBhq+E9n#aHHZ91Ba!VaoMfC', // 建议使用 128 个字符的随机字符串  
+  cookie: { maxAge: 60 * 1000 }  
+}));  
+```
+
+## node_env production
+
+通过NODE_ENV可以来设置环境变量（默认值为development）。
+一般我们通过检查这个值来分别对开发环境和生产环境下做不同的处理。可以在命令行中通过下面的方式设置这个值：
+
+- linux & mac: export NODE_ENV=production
+- windows: set NODE_ENV=production
+
+需要注意的是，window下的vscode终端是linux环境，所以`set NODE_ENV=production`是无效的。
+
+比方说如果代码中要对生产环境下做一些处理，可以这样写：
+```
+if (process.env.NODE_ENV === 'production') {
+    // just for production code
+}
+```
+
+## morgan
+
+morgan是express默认的日志中间件

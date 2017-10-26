@@ -8,6 +8,11 @@ var flash = require('connect-flash');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var settings = require('./db/settings');
+// log system
+var morgan = require('morgan');
+var fs = require('fs')
+var accessLogfile = fs.createWriteStream('access.log', { flags: 'a' })
+var errorLogfile = fs.createWriteStream('error.log', { flags: 'a' })
 
 var index = require('./routes/index');
 var user = require('./routes/user');
@@ -16,9 +21,10 @@ var reg = require('./routes/reg');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 
-
-
 var app = express();
+
+// log system accessLogfile
+app.use(morgan('default', { stream: accessLogfile }))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,31 +39,31 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-  secret: settings.cookieSecret,
-  store: new MongoStore({
-    url: settings.url,
-    cookie: { maxAge: 60000 },
+    secret: settings.cookieSecret,
+    store: new MongoStore({
+        url: settings.url,
+        cookie: { maxAge: 60000 }
+    }),
     resave: false,
     saveUninitialized: true
-  })
 }))
 
 app.use(flash());
 // set flash
-app.use(function (req, res, next) {
-  res.locals.user = req.session.user;
-  console.log('res.locals.user:', res.locals.user)
-  var err = req.flash('error');
-  var success = req.flash('success');
+app.use(function(req, res, next) {
+    res.locals.user = req.session.user;
+    console.log('res.locals.user:', res.locals.user)
+    var err = req.flash('error');
+    var success = req.flash('success');
 
-  res.locals.error = err.length ? err : null;
-  console.log('res.locals.error:', res.locals.error)
+    res.locals.error = err.length ? err : null;
+    console.log('res.locals.error:', res.locals.error)
 
-  res.locals.success = success.length ? success : null;
-  console.log('res.locals.success:', res.locals.success)
+    res.locals.success = success.length ? success : null;
+    console.log('res.locals.success:', res.locals.success)
 
-  console.log('....flash().....')
-  next();
+    console.log('....flash().....')
+    next();
 });
 
 // 路由设置
@@ -76,22 +82,38 @@ app.get('/logout', logout);
 // })
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
+
+console.log('env: ' + app.get('env'))
 
 // error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function(err, req, res, next) {
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+
+    // console.log('env: ' + app.get('env'))
+    var meta = '[' + new Date() + ']' + '\n' + 'url:' + req.url + '\n';
+    errorLogfile.write(meta + err.stack + '\n')
+    next()
+
 });
+
+// app.configure('production', function() {
+//     app.error(function(err, req, res, next) {
+//         var meta = '[' + new Date() + ']' + req.url + '\n';
+//         errorLogfile.write(meta + err.stack + '\n')
+//     })
+// })
 
 // 创建动态视图助手
 // app.dynamicHelpers({
